@@ -1,66 +1,78 @@
 var keys = require('../config.js');
-
+var Promise = require('bluebird');
+var request = require('request-promise');
 // Uber API Constants
-var uberClientId = keys.UBER_CLINET_ID
+var uberClientId = keys.UBER_CLIENT_ID
   , uberServerToken = keys.UBER_SERVER_TOKEN;
 
-// Create variables to store latitude and longitude
-var userLatitude
-  , userLongitude
-  , endLatitude = 40.7283405
-  , endLongitude = -73.994567;
+
+
 
 // Create variable to store timer
-var timer;
+// var timer;
 
-navigator.geolocation.watchPosition(function(position) {
-  // Update latitude and longitude
-  userLatitude = position.coords.latitude;
-  userLongitude = position.coords.longitude;
+//get price estimates
 
-  // Create timer 
-  // Once initialized, it will fire every 60 seconds as recommended by the Uber API
-  // We only create the timer after we've gotten the user's location for the first time 
-  if (typeof timer === typeof undefined) {
-    timer = setInterval(function() {
-        getEstimatesForUserLocation(userLatitude, userLongitude);
-    }, 60000);
-
-    // Query Uber API if needed
-    getEstimatesForUserLocation(userLatitude, userLongitude);
-  }
-});
-
-function getEstimatesForUserLocation(latitude,longitude) {
-  https({
-    url: "https://api.uber.com/v1/estimates/price",
+var getPriceEstimates = function(latitude, longitude, end_latitude, end_longitude) {
+  return request({
+    uri: "https://api.uber.com/v1/estimates/price",
     headers: {
       Authorization: "Token " + uberServerToken
     },
-    data: { 
+    qs: {
       start_latitude: latitude,
       start_longitude: longitude,
-      end_latitude: endLatitude,
-      end_longitude: endLongitude
-    }
-    .then.function(res) {
-      console.log(JSON.stringify(res));
+      end_latitude: end_latitude,
+      end_longitude: end_longitude
+    },
+    json: true
+  }).then(function(res) {
 
       // 'res' is an object with a key containing an Array
       var data = res["prices"]; 
-      if (typeof data != typeof undefined) {
-        // Sort Uber products by time to the user's location 
-        data.sort(function(t0, t1) {
-          return t0.duration - t1.duration;
-        });
+      return data;
+  })
+};
 
-        // Update the Uber button with the shortest time
-        var shortest = data[0];
-        if (typeof shortest != typeof undefined) {
-          console.log("Updating time estimate...");
-          $("#time").html("IN " + Math.ceil(shortest.duration / 60.0) + " MIN");
-        }
-      }
+var getTimeEstimates = function(latitude, longitude) {
+  return request({
+      uri: "https://api.uber.com/v1/estimates/time",
+      headers: {
+        Authorization: "Token " + uberServerToken
+      },
+      qs: { 
+        start_latitude: latitude,
+        start_longitude: longitude
+      },
+      json: true
+    })
+      .then(function(res) {
+
+        // 'res' is an object with a key containing an Array
+        var data = res["times"];
+        return data; 
+      
+    });
+  };
+
+var get_uber_data = function(latitude, longitude, end_latitude, end_longitude){
+  var calls = [getPriceEstimates(latitude, longitude, end_latitude, end_longitude), getTimeEstimates(latitude, longitude)];
+  return Promise.all(calls).then(function(data_array) {
+    var uber_arr = [];
+    for(var i = 0; i < data_array[0].length; i++) {
+      var temp = data_array[0][i];
+      temp.eta = data_array[1][i].estimate;
+      uber_arr.push(temp);
     }
+    return uber_arr;
   });
-}
+};
+
+
+
+module.exports = {
+  getPriceEstimates: getPriceEstimates,
+  getTimeEstimates: getTimeEstimates,
+  get_uber_data: get_uber_data
+};
+  
