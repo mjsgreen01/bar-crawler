@@ -1,23 +1,20 @@
-var keys = require('../config.js');
 var Promise = require('bluebird');
 var request = require('request-promise');
+
 // Uber API Constants
-var uberClientId = keys.UBER_CLIENT_ID
-  , uberServerToken = keys.UBER_SERVER_TOKEN;
+var keys = {};
+if (process.env.NODE_ENV === 'production') {
+  keys.UBER_SERVER_TOKEN = process.env.UBER_SERVER_TOKEN;
+} else {
+  keys = require('../config.js');
+}
 
-
-
-
-// Create variable to store timer
-// var timer;
-
-//get price estimates
 
 var getPriceEstimates = function(latitude, longitude, end_latitude, end_longitude) {
   return request({
-    uri: "https://api.uber.com/v1/estimates/price",
+    uri: 'https://api.uber.com/v1/estimates/price',
     headers: {
-      Authorization: "Token " + uberServerToken
+      Authorization: 'Token ' + keys.UBER_SERVER_TOKEN
     },
     qs: {
       start_latitude: latitude,
@@ -27,31 +24,27 @@ var getPriceEstimates = function(latitude, longitude, end_latitude, end_longitud
     },
     json: true
   }).then(function(res) {
-
       // 'res' is an object with a key containing an Array
-      var data = res["prices"]; 
+      var data = res.prices;
       return data;
-  })
+  });
 };
 
 var getTimeEstimates = function(latitude, longitude) {
   return request({
-      uri: "https://api.uber.com/v1/estimates/time",
+      uri: 'https://api.uber.com/v1/estimates/time',
       headers: {
-        Authorization: "Token " + uberServerToken
+        Authorization: 'Token ' + keys.UBER_SERVER_TOKEN
       },
-      qs: { 
+      qs: {
         start_latitude: latitude,
         start_longitude: longitude
       },
       json: true
-    })
-      .then(function(res) {
-
+    }).then(function(res) {
         // 'res' is an object with a key containing an Array
-        var data = res["times"];
-        return data; 
-      
+        var data = res.times;
+        return data;
     });
   };
 
@@ -75,4 +68,3 @@ module.exports = {
   getTimeEstimates: getTimeEstimates,
   get_uber_data: get_uber_data
 };
-  
