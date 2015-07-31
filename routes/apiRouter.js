@@ -40,20 +40,23 @@ router.post('/', function(req, res) {
         };
       }
     });
-    console.log("data from 4square", fourSquareData);
-    return fourSquareData;
 
+    return fourSquareData;
   }).then(function(data){
-    console.log('right before calling instagram with: ', data);
-    // // test-data
-    // data = [ { name: 'Justice Urban Tavern',
-    // coordinates: { lat: 34.05124604421524, lng: -118.2423198223114 },
-    // address: '120 S Los Angeles St (1st St.) Los Angeles, CA 90012 United States',
-    // foursquare_v2_id: '447bf8f1f964a520ec331fe3' }];
     instagram.obtainInstaData(data).then(function(resData){
-      console.log('before sending response Data: ', resData);
       res.json(resData);
     });
+  });
+});
+
+router.post('/uber', function(req, res) {
+  var start_latitude = parseFloat(req.body.start_latitude);
+  var start_longitude = parseFloat(req.body.start_longitude);
+  var end_latitude = parseFloat(req.body.end_latitude);
+  var end_longitude = parseFloat(req.body.end_longitude);
+
+  uber.get_uber_data(start_latitude, start_longitude, end_latitude, end_longitude).then(function(data) {
+    res.json(data);
   });
 });
 
