@@ -21,6 +21,8 @@ function mapCtrl ($scope, Getdata, $rootScope){
 
   // setRandomInterval();
 
+  $scope.loading = true;
+
   $scope.showUber = false;
 
   $scope.getmap = Getdata.getmap;
@@ -29,5 +31,5 @@ function mapCtrl ($scope, Getdata, $rootScope){
     Getdata.getmap($rootScope.start, $rootScope.end, $rootScope.travelMethod);
   };
 
-  $scope.makeMap();
+  $scope.makeMap().then(function(){$scope.loading = false;});
 }
