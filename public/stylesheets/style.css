@@ -2,6 +2,18 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   text-align: center;
+  -webkit-filter: blur(0px);
+  -moz-filter: blur(0px);
+  -o-filter: blur(0px);
+  -ms-filter: blur(0px);
+  filter: blur(0px);
+  /*transition-blur*/
+  transition: 1.5s filter ease-in-out, 1.5s transform ease-in-out;
+  -webkit-transition: 1.5s -webkit-filter ease-in-out, 1.5s -webkit-transform ease-in-out;
+  -moz-transition: 1.5s -moz-filter ease-in-out, 1.5s -moz-transform ease-in-out;
+  -ms-transition: 1.5s -ms-filter ease-in-out, 1.5s -ms-transform ease-in-out;
+  -o-transition: 1.5s -o-filter ease-in-out, 1.5s -o-transform ease-in-out;
+
 }
 #startInput{
   width: 400px;
@@ -26,7 +38,17 @@ a {
   color: #00B7FF;
 }
 
-html, body, #map-canvas {
+html, body{
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+body{
+  padding-top: 1px;
+}
+
+#map-canvas {
   height: 400px;
   width: 500px;
   margin: 0;
@@ -34,30 +56,31 @@ html, body, #map-canvas {
 }
 
 #map-canvas{
-  border-radius: 10px;
-  border: 2px solid #FFFFFF;
+
 }
 
 .insta-pics{
   border-radius: 10px;
-  border: 2px solid #FFFFFF;
-  background-color: #FFFFFF;
+  /*border: 2px solid #FFFFFF;*/
+  background-color: rgba(17, 13, 29, 0.57);
+  max-height: 630px;
+  padding-bottom: 30px;
 }
 
-.center{
-  position: absolute;
-  top: 50%;
-  left: 48%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%)
+.simple-form.center{
+  display: block;
+  width: 37%;
+  margin: 0 auto;
+  margin-top: 17%;
 }
 
 .route{
   padding: 10px;
-  margin-left: 7%;
 }
-.form-group{
-  width: 150%;
+.form-horizontal .form-group{
+  width: 100%;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .methods{
@@ -69,8 +92,8 @@ input{
 }
 
 body {
-  background-image: url(../Assets/InstaTrip_v1.jpg);
-  background-position: center center;
+  background-image: url('http://9582d0ff08bb33048637-4563138e2fb250103a6a433e4e8decae.r42.cf1.rackcdn.com/u/Syr-Background-Nightlife-11984416.jpg');
+  background-position: center 0px;
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -81,38 +104,85 @@ body {
   float: left;
   width: 170px;
   text-align: left;
-  margin: 5px 60px;
+  margin: 5px 20px;
   display: inline;
   font-size: 22px
 }
 
 .home-button {
-  float: left;
+  float: right;
   text-align: left;
-  margin: 2px 00px;
+  margin: 2px 0px;
   display: inline;
+  color: #fff;
+  background-color: #8272CC;
+  border-color: transparent;
+  padding: 6px 22px;
+}
+
+.landingButton{
+  font-size: 16px;
+    padding: 9px 25px;
+    border-radius: 2px;
+    background-color: #512DA8;
+    color: #fff;
+    border-color: #512DA8;
+    /* -webkit-appearance: initial; */
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: 0.2s;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    border-style: solid;
+}
+
+.btn.focus, .btn:focus, .btn:hover {
+    color: #fff;
+    background-color: #5A4AA5;
+    text-decoration: none;
+}
+
+.landingButton:hover, .landingButton:active, .landingButton:focus, .landingButton:visited{
+  background-color: #673AB7;
+  border-color: #673AB7;
+  color: #fff;
 }
 
 .map-title {
-  float: left;
-  text-align: left;
-  margin: 5px 355px;
-  display: inline;
-  font-size: 22px
+  text-align: right;
 }
 
 .nav-bar{
-  /*overflow: auto;
-  width: 100%;*/
-  border-radius: 10px;
-  border: 2px solid #FFFFFF;
-  background-color: #008080;
+  background-color: #512DA8;
   color: white;
 }
 
+.navContain{
+  padding: 10px 15px;
+  margin-bottom: 25px;
+}
+
+.contentContain{
+  width: 1200px;
+}
 .img-responsive {
-  margin: 10px 1px 10px 1px;
+  margin: 10px auto;
   border: 1px solid black;
+}
+
+.scrollContain{
+  overflow: scroll;
+  max-height: 550px;
+}
+
+.instaHeader, .mapHeader{
+  font-size: 24px;
+  color: #fff;
+  padding: 15px 0px;
+}
+
+.gmap{
+  height: 600px;
+  background-color: #512DA8;
+  border-radius: 10px;
 }
 
 .team{
@@ -210,3 +280,32 @@ body {
   max-height: 650px;
 }
 
+.testing {
+  width: 100%;
+}
+
+.marker {
+}
+
+.marker .marker-title {
+  text-align: center;
+  background: #fff;
+  font-size: 12pt;
+}
+
+.marker .marker-address {
+  width: 250px;
+  background: #fff;
+  text-align: center;
+  resize: both;
+}
+
+.youreDrunk{
+  -webkit-filter: blur(2px);
+  -moz-filter: blur(2px);
+  -o-filter: blur(2px);
+  -ms-filter: blur(2px);
+  filter: blur(2px);
+  -webkit-transform: rotate(1deg);
+          transform: rotate(1deg);
+}

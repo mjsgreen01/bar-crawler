@@ -1,16 +1,29 @@
-<div class='container'>
-  <div class="container-fluid nav-bar" style='width: 1200px'>
-    <div class="insta-feed">Instagram feed</div>
-    <button class="btn btn-default home-button" ui-sref="landing">New Route</button> 
-    <div class="map-title">Map</div>
-  </div>
-  <div class="col-sm-4 insta-pics" id="left">
-    <div ng-scrollable>
-      <div ui-view>
+<div>
+  <div class="container-fluid nav-bar navContain">
+    <div class="container innerNavContain">
+      <div class="col-sm-4 leftNavContain">
+        <div class="insta-feed">BarCrawler</div>
+        <div class="btn home-button" ui-sref="landing">New Route</div> 
+      </div>
+      <div class="col-sm-8 map-title">
+        <div class="home-button btn">Get A Ride</div>
+
       </div>
     </div>
   </div>
-  <div class="col-sm-8 gmap" id="right">
-    <div id="map-canvas" style='width: 800px; height: 600px'></div>
+  <div class="container contentContain">
+    <div class="col-sm-4 insta-pics" id="left">
+      <div class="instaHeader">Instagram Feed</div>
+      <div class="scrollContain">
+        <div ui-view>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-8" id="right">
+      <div class="gmap">
+        <div class="mapHeader">The Crawl</div>
+        <div id="map-canvas" style='width: 750px; height: 572px'></div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,28 +1,35 @@
-# TeamKraken
-TeamKraken's Project Repo
+# Orbiting Kittens
+Orbiting Kittens Project Repo
 
 ## Overview ##
 
-InstaView enables users to input a starting and end point then receive the fastest route based on their method and all instagram posts made within the last hour along that route. 
+Barcrawler enables users to input a start and end point to automatically build a bar crawl route with Instagram pictures from each stop.
 
-It is a great way to provide users with a visualization of their route and interesting things happening on that route just before they head out.
-
-Simply visit https://teamkraken.herokuapp.com to use the application.
+<!-- Simply visit https://teamkraken.herokuapp.com to use the application. -->
 
 ## Installation ##
 
-To work on the source code, after cloning the repo you must npm & bower install. 
-To start your local server enter into the bin folder and enter DEBUG=server npm start
+To work on the source code, after cloning the repo you must `npm install` & `bower install`.
+
+To start your local server run `npm start`.
 
 ## API Reference ##
 
-We utilized both GoogleMaps and Instagram APIs. You do not need an API key for GoogleMaps but you will need an Instgram API key to see the images on the route. If you do not currently have one you can apply for one here: https://instagram.com/developer/?hl=en
+We utilized both Google Maps, Instagram, and Foursquare APIs.
+You can get API keys for each from:
+* Instagram: <https://instagram.com/developer/clients/register/>
+* Foursquare: <https://foursquare.com/developers/register>
+* Google Maps: <https://console.developers.google.com/flows/enableapi?apiid=directions_backend&keyType=SERVER_SIDE>
 
-For Instagram you will need a client ID and client secret.
 
 You must create a config.js file within the instatrip folder and insert the below into it + your keys:
-module.exports = {
-  InstaClientID: 'INSERT HERE',
-  InstaClientSecret: 'INSERT HERE'
-}
 
+    module.exports = {
+      INSTAGRAM_ID: 'KEY',
+      INSTAGRAM_SECRET: 'KEY',
+
+      FOURSQUARE_ID: 'KEY',
+      FOURSQUARE_SECRET: 'KEY',
+
+      MAPS_KEY: 'KEY'
+    }

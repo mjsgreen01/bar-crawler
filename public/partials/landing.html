@@ -1,16 +1,16 @@
-  <form novalidate class="simple-form center form-horizontal">
+  <form ng-submit="setScope(start, end, method)" novalidate class="simple-form center form-horizontal">
     <div class="form-group">
-      <div class="col-sm-10">
-        <input type="text" class="form-control start"  ng-autocomplete id="start" ng-model="start" options='options' placeholder="Start Location" required/>  
+      <div class="col-sm-10 testing">
+        <input type="text" class="form-control start"  ng-autocomplete id="start" ng-model="start" placeholder="Start Location" required/>
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-10">
-        <input type="text" class="form-control end" ng-autocomplete id="end" ng-model="end" options='options' placeholder="End Location" required/>  
+      <div class="col-sm-10 testing">
+        <input type="text" class="form-control end" ng-autocomplete id="end" ng-model="end" placeholder="End Location" required/>
       </div>
     </div>
     <!-- Method buttons -->
-    <div class="btn-group methods" data-toggle="buttons">
+    <!-- <div class="btn-group methods" data-toggle="buttons">
       <label class='btn btn-primary'>
         <input type="radio" ng-model="method" value="WALKING">Walk</input>
       </label>
@@ -26,10 +26,10 @@
       <div ng-show="method" id='methodtext'>
         Method Selected: {{ method }}
       </div>
-    </div>
+    </div> -->
 
     <div class="route">
-        <button type="submit" class:"route btn btn-default" ng-click="setScope(start, end, method)" ui-sref="display">Get Kraken</button>    
+        <button type="submit" class="route btn btn-default landingButton" ng-click="setScope(start, end, method)" ui-sref="display">Get Crawlin</button>
     </div>
   </form>
-  <div class="team"><img src="../Assets/KrakenLogo.png" width="30px" height="auto"></br>Team Kraken</div>
+  <div class="team"><img src="/img/logo.png" width="30px" height="auto"></br>Team Orbiting Kittens</div>
