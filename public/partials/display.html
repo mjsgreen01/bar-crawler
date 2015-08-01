@@ -1,4 +1,24 @@
 <div>
+  <div ng-show="showUber" class="uberPopup">
+    <section>
+    <h3 class="closeUber" ng-click="showUber = false">X</h3>
+      <h1>Uber</h1>
+      <div class="info-container">
+        <span class="info-header">When</span>
+        <span class="info when">July 31, 2015 at 7:00pm</span>
+      </div>
+      <div class="info-container">
+        <span class="info-header">Where</span>
+        <span class="info where">MakerSquare</span>
+      </div>
+      <img class="map" src="http://maps.googleapis.com/maps/api/staticmap?center=40.7248,-73.99597&zoom=17&format=png&sensor=false&size=280x280&maptype=roadmap&style=element:geometry.fill|color:0xf4f4f4&markers=color:red|40.7248,-73.99597&scale=2" alt="">
+      <a href="#">
+        <div class="button">
+          <p id="time">ESTIMATING TIME</p>
+        </div>
+      </a>
+    </section>
+  </div>
   <div class="container-fluid nav-bar navContain">
     <div class="container innerNavContain">
       <div class="col-sm-4 leftNavContain">
@@ -6,7 +26,7 @@
         <div class="btn home-button" ui-sref="landing">New Route</div> 
       </div>
       <div class="col-sm-8 map-title">
-        <div class="home-button btn">Get A Ride</div>
+        <div ng-click="showUber = true" class="home-button btn">Get A Ride</div>
 
       </div>
     </div>
