@@ -19,7 +19,7 @@ function mapCtrl ($scope, Getdata, $rootScope){
     }, randomIntFromInterval(9000,30000));
   }
 
-  // setRandomInterval();
+  setRandomInterval();
 
   $scope.showUber = false;
 
