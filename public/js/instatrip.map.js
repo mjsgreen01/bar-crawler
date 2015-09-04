@@ -16,7 +16,7 @@ function mapCtrl ($scope, Getdata, $rootScope){
         bodyEl.removeClass('youreDrunk');
       }, 1500);
       setRandomInterval();
-    }, randomIntFromInterval(9000,30000));
+    }, randomIntFromInterval(30000,90000));
   }
 
   setRandomInterval();
