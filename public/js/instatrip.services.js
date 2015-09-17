@@ -48,10 +48,11 @@ angular.module('instatrip.services', [])
     function calcRoute(start, end, travelMethod, callback) {
       var waypoints = []; // these will be waypoints along the way
       var checkboxArray = document.getElementById('waypoints');
+
       if (markers.length > 0) {
         for (var k = 0; k < markers.length; k++) {
           waypoints.push({
-            location: new google.maps.LatLng(markers[k].position.G, markers[k].position.K),
+            location: new google.maps.LatLng(markers[k].position.lat(), markers[k].position.lng()),
             stopover: true
           });
         }
@@ -64,13 +65,14 @@ angular.module('instatrip.services', [])
           travelMode: google.maps.TravelMode[travelMethod],
           unitSystem: google.maps.UnitSystem.METRIC
       };
+
       directionsService.route(request, function(response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
             var path = response.routes[0].overview_path;
-            startCoords.location.latitude = path[0].G;
-            startCoords.location.longitude = path[0].K;
-            endCoords.location.latitude = path[path.length-1].G;
-            endCoords.location.longitude = path[path.length-1].K;
+            startCoords.location.latitude = path[0].lat();
+            startCoords.location.longitude = path[0].lng();
+            endCoords.location.latitude = path[path.length-1].lat();
+            endCoords.location.longitude = path[path.length-1].lng();
             directionsDisplay.setDirections(response);
         }
         console.log('directionsService RESPONSE: ', response.routes[0]);
