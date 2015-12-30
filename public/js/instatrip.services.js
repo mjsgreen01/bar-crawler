@@ -119,7 +119,7 @@ angular.module('instatrip.services', [])
     var setMarkers = function(data) {
       markers = [];
 
-      var makeMarker = function(data, id) {
+      var makeMarker = function(data, id) { console.log('marker data', data, id);
         var myLatlng = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 
         var contentString = '';
@@ -140,6 +140,7 @@ angular.module('instatrip.services', [])
           content: contentString
         });
 
+        // custom bar-icon
         var icon = {
           url: 'http://www.charbase.com/images/glyph/127866',
           scaledSize: new google.maps.Size(50, 50),
@@ -147,12 +148,17 @@ angular.module('instatrip.services', [])
           anchor: new google.maps.Point(32,32)
         };
 
-        var marker = new google.maps.Marker({
+        var markerParams = {
           position: myLatlng,
           id: id,
-          photos: data.photos,
-          icon: icon
-        });
+          photos: data.photos
+        };
+
+        if (id !== 'start' && id !== 'end') {
+          markerParams.icon = icon;
+        }
+
+        var marker = new google.maps.Marker(markerParams);
 
         // Add the event listener to markers so we know when they're clicked
         google.maps.event.addListener(marker, 'click', function() {
