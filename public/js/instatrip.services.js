@@ -45,7 +45,7 @@ angular.module('instatrip.services', [])
       Map = map;
     }
 
-    function calcRoute(start, end, travelMethod, callback) {
+    function calcRoute(start, end, travelMethod) {
       var waypoints = []; // these will be waypoints along the way
       var checkboxArray = document.getElementById('waypoints');
 
@@ -85,12 +85,11 @@ angular.module('instatrip.services', [])
           });
         }
         currentCoords = coords;
-          // callback(response.routes[0].overview_path, coords);
       });
     }
 
     initialize();
-    var routes = calcRoute(start, end, travelMethod, ourCallback);
+    var routes = calcRoute(start, end, travelMethod);
 
 // take variable length array and return an array with n evenly spaced points
     var findN = function(input, n){
@@ -109,12 +108,6 @@ angular.module('instatrip.services', [])
         return output;
     };
 
-
-    function ourCallback(routes, coords){
-      return getPhoto({
-        coords: coords
-      });
-    }
 
     var setMarkers = function(data) {
       markers = [];
@@ -189,7 +182,7 @@ angular.module('instatrip.services', [])
       for(i = 0; i < markers.length; i++) {
         markers[i].setMap(Map);
       }
-      calcRoute(start, end, travelMethod, ourCallback);
+      calcRoute(start, end, travelMethod);
     };
 
     var getLocs = function(start, end) {
@@ -244,39 +237,12 @@ angular.module('instatrip.services', [])
     }
   };
 
-  // Initiate Instagram request and package response into display
-  var getPhoto = function(routes){
-    var imgHolder = [];
-    var linkHolder = {};
-    return $http({
-      method: 'POST',
-      url: "/search",
-      data: {start:"611 Mission Street, San Francisco, CA, United States", end:"25 Rausch Street, San Francisco, CA, United States"}
-
-    }).then(function(resp){
-      var respLength = resp.data.length;
-      for(var i = 0; i < respLength; i++){
-        for (var j = 0; j < resp.data[i].length; j++){
-          if (!(resp.data[i][j].link in linkHolder)){
-            linkHolder[resp.data[i][j].link] = resp.data[i][j];
-            imgHolder.push(resp.data[i][j]);
-            break;
-          }
-        }
-      }
-      currentImages = imgHolder;
-      $state.go('display.pics');
-      return currentImages;
-    });
-  };
-
   var getImages = function(){
     return currentImages;
   };
 
   return {
             getmap: getmap,
-            getPhoto: getPhoto,
             getImages: getImages,
             markMap: markMap
 
