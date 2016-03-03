@@ -18,7 +18,7 @@ instagram.set('client_secret', keys.INSTAGRAM_SECRET);
 * Gets instagram photos tagged with a specific location.
 * Searches by instagram-location-ID
 */
-var getInstaDataById = function(locationId, barName, coords, lat, lng, address ){
+var getInstaDataById = function (instagramVenue ) {
   var d = new Date();
   var m = d.getMonth();
   d.setMonth(d.getMonth() - 12);
@@ -31,12 +31,19 @@ var getInstaDataById = function(locationId, barName, coords, lat, lng, address )
   // Get the time value in milliseconds and convert to seconds
   var timeStamp = d/1000;
 
-  return new Promise(function(resolve, reject){
-    instagram.locations.recent({ location_id: locationId, min_timestamp: timeStamp,
-      complete: function(data){
-        // 'data' is an array of photo-objects for a specific location
-        resolve({barName:barName, lat: lat, lng: lng, address: address, data: data});
-      },error: function(errorMessage, errorObject, caller){
+  return new Promise(function (resolve, reject) {
+    instagram.locations.recent({ location_id: instagramVenue.instagramLocationId, min_timestamp: timeStamp,
+      complete: function (photoObjArr) {
+        // 'photoObjArr' is an array of photo-objects for a specific location
+        // TODO: use extend here to add photoObjArray to the obj. rather than rebuilding it by hand
+        resolve({
+          barName:instagramVenue.barName, 
+          lat: instagramVenue.lat, 
+          lng: instagramVenue.lng, 
+          address: instagramVenue.address, 
+          photoObjArr: photoObjArr
+        });
+      },error: function (errorMessage, errorObject, caller) {
         reject(errorMessage);
         // console.log(errorMessage);
       }
@@ -49,24 +56,25 @@ var getInstaDataById = function(locationId, barName, coords, lat, lng, address )
 /**
 * Gets instagram location info based on foursquare ID
 */
-var getInstaLocation = function(foursquareId, barName, coords, lat, lng, address, dist){
-  return new Promise(function(resolve, reject){
-    instagram.locations.search({ foursquare_v2_id: foursquareId, 
-      complete: function(data){
+var getInstaLocation = function (foursquareVenue) {
+  return new Promise(function (resolve, reject) {
+    instagram.locations.search({ foursquare_v2_id: foursquareVenue.foursquareId, 
+      complete: function (data) {
         console.log('instagram location info request data: ', data);
         if (data.length === 0) {
           resolve();
         }else{
+          // TODO: use extend here to add instagramLocationId to the obj. rather than rebuilding it by hand
           resolve({
             instagramLocationId: data[0].id,
-            barName: barName, 
-            coords: coords, 
-            lat: lat,
-            lng: lng,
-            address: address
+            barName: foursquareVenue.barName, 
+            coords: foursquareVenue.coords, 
+            lat: foursquareVenue.lat,
+            lng: foursquareVenue.lng,
+            address: foursquareVenue.address
           });
         }
-      },error: function(errorMessage, errorObject, caller){
+      },error: function (errorMessage, errorObject, caller) {
         reject(errorMessage);
         console.log(errorMessage);
         // console.log(errorMessage);
@@ -80,13 +88,22 @@ var getInstaLocation = function(foursquareId, barName, coords, lat, lng, address
 /**
 * Format instagram data object to send back to client
 */
-var photoParser = function(barName, lat, lng, address, photoObjArr){
-  var results = [];
-  var locationPhotoObj = { barName: barName, location: {latitude: lat, longitude: lng, address: address}, photos: [] };
-  for(var i = 0; i < photoObjArr.length; i++){
+var photoParser = function (venueData) {
+  var locationPhotoObj = { 
+    barName: venueData.barName, 
+    location: {
+      latitude: venueData.lat, 
+      longitude: venueData.lng, 
+      address: venueData.address
+    }, 
+    photos: [] 
+  };
+
+  // get the link and low-res image from each intagram photo obj.
+  for(var i = 0; i < venueData.photoObjArr.length; i++){
     locationPhotoObj.photos.push({
-      link: photoObjArr[i].link,
-      url: photoObjArr[i].images.low_resolution.url
+      link: venueData.photoObjArr[i].link,
+      url: venueData.photoObjArr[i].images.low_resolution.url
     });
   }
 
@@ -98,62 +115,53 @@ var photoParser = function(barName, lat, lng, address, photoObjArr){
 
 /**
 * This gets called first
-* Recieves array of locations' data
+* @param {Array} foursquareData - array of foursquare location objects
 */
 
-var obtainInstaData = function(instaData){
-  return new Promise(function(resolve, reject){
+var obtainInstaData = function (foursquareData) {
+  return new Promise(function (resolve, reject) {
   
     var lat, lng, barName, foursquare_v2_id, address; 
-    var dist = 300; // dist unit: m, max: 5000m --- distance around lat+lng to look for photos
     var instaLocationPromiseArr = [];
 
     // get the instagram id of each location based on the foursquare id
-    for (var i = 0; i < instaData.length; i++){
-      foursquare_v2_id = instaData[i].foursquare_v2_id;
-      barName = instaData[i].name;
-      lat = instaData[i].coordinates.lat;
-      lng = instaData[i].coordinates.lng;
-      address = instaData[i].address;
+    // TODO: verify that we can remove the 'coords' property here
+    // TODO: use forEach with extend here instead of rebuilding the obj. by hand
+    for (var i = 0; i < foursquareData.length; i++){
+      foursquareVenue = {
+        foursquare_v2_id: foursquareData[i].foursquare_v2_id,
+        barName: foursquareData[i].name,
+        coords: foursquareData,
+        lat: foursquareData[i].coordinates.lat,
+        lng: foursquareData[i].coordinates.lng,
+        address: foursquareData[i].address
+      };
       // save each promise in an array
-      instaLocationPromiseArr.push( getInstaLocation( foursquare_v2_id, barName, instaData, lat, lng, address, dist ) );
+      instaLocationPromiseArr.push( getInstaLocation( foursquareVenue ) );
     }
 
     // once all promises are resolved, look up photos tagged with each location
-    Promise.all( instaLocationPromiseArr ).then(function(resultsArr){
+    Promise.all( instaLocationPromiseArr ).then(function (resultsArr) {
       var instaDataPromiseArr = [];
 
       // filter out results where instagram did not find a location matching a foursquare ID
-      resultsArr = resultsArr.filter(function(location){
+      resultsArr = resultsArr.filter(function (location) {
         return location !== undefined;
       });
 
-      for (var i = 0; i < resultsArr.length; i++){
-        var instagramLocationId = resultsArr[i].instagramLocationId;
-        var barName = resultsArr[i].barName;
-        var  coords = resultsArr[i].coords;
-        var  lat = resultsArr[i].lat;
-        var  lng = resultsArr[i].lng;
-        var address = resultsArr[i].address;
-
-        instaDataPromiseArr.push( getInstaDataById( instagramLocationId, barName, coords, lat, lng, address ) );
-      }
+      resultsArr.forEach(function (instagramVenue) {
+        instaDataPromiseArr.push( getInstaDataById( instagramVenue ) );
+      });
 
       return Promise.all( instaDataPromiseArr );
-      // once all promises are resolved, format the data for each location to send to client
-    }).then(function(resultsArr){
+    // once all promises are resolved, format the data for each location to send to client
+    }).then(function (resultsArr) {
       var parsedResultsArr = [];
 
       // format each location's data to send back to client
-      for(var i = 0; i < resultsArr.length; i++){
-        var barName = resultsArr[i].barName;
-        var lat = resultsArr[i].lat;
-        var lng = resultsArr[i].lng;
-        var address = resultsArr[i].address;
-        var photoObjArr = resultsArr[i].data;
-
-        parsedResultsArr.push( photoParser(barName, lat, lng, address, photoObjArr) );
-      }
+      resultsArr.forEach(function (instagramVenueData) {
+        parsedResultsArr.push( photoParser( instagramVenueData ) );
+      });
 
       resolve(parsedResultsArr);
 

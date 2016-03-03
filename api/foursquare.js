@@ -42,7 +42,7 @@ var get_foursquare_data_for_coord = function(coords) {
 };
 
 /**
- * Takes an array of coordinates and fetches nearby bars from for
+ * Takes an array of coordinates and fetches nearby bars from foursquare
  * @param  {Object[]} points
  * @param {Float} points[].lat Latitude
  * @param {Float} points[].lng Longitude
@@ -78,7 +78,9 @@ var filter_foursquare_data = function(res) {
     return obj.venue.rating !== undefined;
   });
 
+  // if there are any bars with ratings around this coordinate, only use the ones with ratings
   if (with_ratings.length) {
+    // sort by rating
     data = with_ratings.sort(function(a, b) {
       if (a.venue.rating > b.venue.rating) {
         return -1;
@@ -88,7 +90,9 @@ var filter_foursquare_data = function(res) {
         return 0;
       }
     });
+  // if none of the bars have ratings
   } else {
+    // sort by checkin count
     data = data.sort(function(a, b) {
       if (a.venue.stats.checkinscount > b.venue.stats.checkinscount) {
         return 1;
@@ -121,25 +125,28 @@ var choose_foursquare_venues = function(data, always_top) {
   always_top = (always_top === undefined) ? false : always_top;
   var venue_ids = {};
 
-  var fourSquareData = data.map(function(venues) {
-    venues = venues.filter(function(venue) {
+  var fourSquareData = data.map(function(venueSet) {
+    // remove duplicate venues
+    venueSet = venueSet.filter(function(venue) {
       return !(venue_ids[venue.venue.id]);
     });
 
-    if (!venues.length) {
+    // if no venues are in the set
+    if (!venueSet.length) {
       return undefined;
     }
 
-    var index = (always_top) ? 0 : Math.floor(Math.random() * venues.length);
+    // select either the top-sorted venue, or randomly select one
+    var index = (always_top) ? 0 : Math.floor(Math.random() * venueSet.length);
 
     return {
-      'name': venues[index].venue.name,
+      'name': venueSet[index].venue.name,
       'coordinates': {
-        'lat': venues[index].venue.location.lat,
-        'lng': venues[index].venue.location.lng
+        'lat': venueSet[index].venue.location.lat,
+        'lng': venueSet[index].venue.location.lng
       },
-      'address': venues[index].venue.location.formattedAddress.join(' '),
-      'foursquare_v2_id': venues[index].venue.id
+      'address': venueSet[index].venue.location.formattedAddress.join(' '),
+      'foursquare_v2_id': venueSet[index].venue.id
     };
   });
 

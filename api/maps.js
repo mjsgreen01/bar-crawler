@@ -41,10 +41,10 @@ var choose_points = function(route, num_points) {
   var steps = route.steps;
   var result = [];
 
-  // Determine the number of points
+  // Determine the number of points (max out at 6 (b/c of Gmaps 8-point limit))
   num_points = Math.min(num_points, 6) || Math.min(Math.max(1, Math.floor(route.distance.value / 300)), 6);
 
-  // Determine the distance between points
+  // Determine the distance between points (spaced evenly)
   var interval = Math.round(route.distance.value / (num_points + 1));
 
   var done = false, i = 0,
