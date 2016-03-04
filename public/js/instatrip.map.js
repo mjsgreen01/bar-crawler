@@ -22,7 +22,7 @@ function mapCtrl ($scope, Getdata, $rootScope){
     }, randomIntFromInterval(30000,90000));
   }
 
-  setRandomInterval();
+  // setRandomInterval();
 
   $scope.$watch(function(scope) {
     return Getdata.getImages();

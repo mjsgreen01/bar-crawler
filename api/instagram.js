@@ -58,7 +58,7 @@ var getInstaDataById = function (instagramVenue ) {
 */
 var getInstaLocation = function (foursquareVenue) {
   return new Promise(function (resolve, reject) {
-    instagram.locations.search({ foursquare_v2_id: foursquareVenue.foursquareId, 
+    instagram.locations.search({ foursquare_v2_id: foursquareVenue.foursquare_v2_id, 
       complete: function (data) {
         console.log('instagram location info request data: ', data);
         if (data.length === 0) {
