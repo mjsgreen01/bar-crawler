@@ -1,21 +1,22 @@
 angular.module('instatrip.map',[])
   .controller('mapCtrl', mapCtrl);
 
-function mapCtrl ($scope, Getdata, $rootScope){
-  $scope.init = function(){
+function mapCtrl ($scope, Getdata, $rootScope) {
+  $scope.init = function () {
     $scope.barClicked = false;
+    $scope.makeMap();
   };
   
-  function randomIntFromInterval(min,max){
+  function randomIntFromInterval (min,max) {
       return Math.floor(Math.random()*(max-min+1)+min);
   }
   
   // randomly add drunken-blur effect
-  function setRandomInterval(){
+  function setRandomInterval () {
     var bodyEl = angular.element( document.querySelector( 'body' ) );
-    setTimeout(function(){
+    setTimeout(function () {
       bodyEl.addClass('youreDrunk');
-      setTimeout(function(){
+      setTimeout(function () {
         bodyEl.removeClass('youreDrunk');
       }, 1500);
       setRandomInterval();
@@ -24,9 +25,10 @@ function mapCtrl ($scope, Getdata, $rootScope){
 
   // setRandomInterval();
 
-  $scope.$watch(function(scope) {
+  // watch for user clicking on a bar
+  $scope.$watch( function (scope) {
     return Getdata.getImages();
-  }, function(newValue, oldValue) {
+  }, function (newValue, oldValue) {
     newValue === undefined || newValue.length === 0 ? $scope.barClicked = false : $scope.barClicked = true;
   });
 
@@ -34,10 +36,9 @@ function mapCtrl ($scope, Getdata, $rootScope){
 
   $scope.getmap = Getdata.getmap;
 
-  $scope.makeMap = function(){
+  $scope.makeMap = function () {
     Getdata.getmap($rootScope.start, $rootScope.end, $rootScope.travelMethod);
   };
 
   $scope.init();
-  $scope.makeMap();
 }

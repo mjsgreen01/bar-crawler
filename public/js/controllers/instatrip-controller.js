@@ -4,7 +4,7 @@ angular
 
 function mainCtrl($scope, $rootScope){
 
-  $scope.setScope = function(start, end, method){
+  $scope.setScope = function(start, end, method){debugger;
     $rootScope.start = start;
     $rootScope.end = end;
     $rootScope.travelMethod = method || 'WALKING';

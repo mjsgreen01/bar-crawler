@@ -10,24 +10,6 @@
         <input type="text" class="form-control end" ng-autocomplete id="end" ng-model="end" placeholder="End Location" required/>
       </div>
     </div>
-    <!-- Method buttons -->
-    <!-- <div class="btn-group methods" data-toggle="buttons">
-      <label class='btn btn-primary'>
-        <input type="radio" ng-model="method" value="WALKING">Walk</input>
-      </label>
-      <label class='btn btn-primary'>
-        <input type="radio" ng-model="method" value="DRIVING">Drive</input>
-      </label>
-      <label class='btn btn-primary'>
-        <input type="radio" ng-model="method" value="BICYCLING">Bike</input>
-      </label>
-      <label class='btn btn-primary'>
-        <input type="radio" ng-model="method" value="TRANSIT">Transit</input>
-      </label>
-      <div ng-show="method" id='methodtext'>
-        Method Selected: {{ method }}
-      </div>
-    </div> -->
 
     <div class="route">
         <button type="submit" class="route btn btn-default landingButton" ng-click="setScope(start, end, method)" ui-sref="display">Get Crawlin</button>

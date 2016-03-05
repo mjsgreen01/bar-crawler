@@ -17,10 +17,6 @@ angular.module('instatrip.services', [])
 
   var getmap = function(start,end,travelMethod) {
 
-    this.curImgs = [];
-
-    var that = this.curImgs;
-
     travelMethod = travelMethod || 'WALKING';
     start = start || 'San Francisco';
     end = end || 'Oakland';
