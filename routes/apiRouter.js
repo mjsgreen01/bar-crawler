@@ -9,6 +9,7 @@ var router = express.Router();
 router.post('/', function(req, res) {
   var start = req.body.start;
   var end = req.body.end;
+  var startLatLng, endLatLng;
 
   // if start or end-points are empty, throw 404
   if (!start || !end) {
@@ -17,6 +18,8 @@ router.post('/', function(req, res) {
 
   // get Gmap walking route btwn start and end
   maps.get_map_route(start, end).then(function(route) {
+    startLatLng = route.routes[0].legs[0].start_location;
+    endLatLng = route.routes[0].legs[0].end_location;
     var leg = route.routes[0].legs[0];
     var points = maps.choose_points(leg);
 
@@ -28,7 +31,13 @@ router.post('/', function(req, res) {
   }).then(function(data){
     // get photos from each location and format data for FE
     instagram.obtainInstaData(data).then(function(resData){
-      res.json(resData);
+      console.log('RESDATA',resData);
+      var response = {
+        startLocation: startLatLng,
+        endLocation: endLatLng,
+        bars: resData
+      };
+      res.json(response);
     });
   });
 });

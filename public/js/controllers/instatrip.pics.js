@@ -2,10 +2,10 @@ angular.module('instatrip.pics',[])
   .controller('picsCtrl', picsCtrl);
 
 
-function picsCtrl ($scope, Getdata, $rootScope, $window){
+function picsCtrl ($scope, MapService, $rootScope, $window){
 
   $scope.changeImage = function(){
-    $scope.imgs = Getdata.getImages();
+    $scope.imgs = MapService.getImages();
     $scope.$emit('content.changed');
     setTimeout(function(){
       $scope.$emit('content.changed');
@@ -14,10 +14,10 @@ function picsCtrl ($scope, Getdata, $rootScope, $window){
 
   $scope.changeImage();
 
-  // This watches for changes in the Getdata factory from getImages function
+  // This watches for changes in the MapService factory from getImages function
   // For instance when a marker is clicked currentImages changes
   $scope.$watch(function(scope) {
-    return Getdata.getImages();
+    return MapService.getImages();
   }, function(newValue, oldValue) {
     $scope.imgs = newValue;
   });

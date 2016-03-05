@@ -25,6 +25,26 @@ body {
   height: 20px;
   margin: 5px;
 }
+
+form input.ng-touched.ng-invalid {
+  border-color: rgb(255, 0, 0);
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255,0,0,.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(255,0,0,.6);
+}
+
+.formValidMessage p {
+  color: red;
+  position: absolute;
+}
+
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn ,
+.btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
+  background-color: #512DA8;
+  opacity: .7;
+  border-color: #512DA8;
+}
+
 .simple-form {
   padding: 10px;
   margin: 10px;
@@ -83,6 +103,7 @@ body{
   width: 100%;
   margin-right: 0;
   margin-left: 0;
+  margin-bottom: 30px;
 }
 
 .methods{

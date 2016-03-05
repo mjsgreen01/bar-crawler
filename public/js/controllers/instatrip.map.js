@@ -1,10 +1,10 @@
 angular.module('instatrip.map',[])
   .controller('mapCtrl', mapCtrl);
 
-function mapCtrl ($scope, Getdata, $rootScope) {
+function mapCtrl ($scope, MapService, $rootScope) {
   $scope.init = function () {
     $scope.barClicked = false;
-    $scope.makeMap();
+    // $scope.makeMap();
   };
   
   function randomIntFromInterval (min,max) {
@@ -27,17 +27,17 @@ function mapCtrl ($scope, Getdata, $rootScope) {
 
   // watch for user clicking on a bar
   $scope.$watch( function (scope) {
-    return Getdata.getImages();
+    return MapService.getImages();
   }, function (newValue, oldValue) {
     newValue === undefined || newValue.length === 0 ? $scope.barClicked = false : $scope.barClicked = true;
   });
 
   $scope.showUber = false;
 
-  $scope.getmap = Getdata.getmap;
+  $scope.getmap = MapService.getmap;
 
   $scope.makeMap = function () {
-    Getdata.getmap($rootScope.start, $rootScope.end, $rootScope.travelMethod);
+    MapService.getmap($rootScope.start, $rootScope.end, $rootScope.travelMethod);
   };
 
   $scope.init();

@@ -1,6 +1,7 @@
 angular.module('instatrip', [
     'ui.router',
-    'instatrip.services',
+    'ngMessages',
+    'instatrip.mapService',
     'instatrip.pics',
     'instatrip.map',
     'ngScrollable'

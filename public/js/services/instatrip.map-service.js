@@ -1,6 +1,6 @@
-angular.module('instatrip.services', [])
+angular.module('instatrip.mapService', [])
 
-.factory('Getdata', function ($http, $state) {
+.factory('MapService', function ($http, $state) {
   var currentImages = [];
   var activeWindow;
   var currentCoords = [];
@@ -15,7 +15,7 @@ angular.module('instatrip.services', [])
     location: {}
   };
 
-  var getmap = function(start,end,travelMethod) {
+  var getmap = function(start,end,travelMethod) {debugger;
 
     travelMethod = travelMethod || 'WALKING';
     start = start || 'San Francisco';
@@ -24,7 +24,9 @@ angular.module('instatrip.services', [])
     var directionsDisplay;
     var directionsService = new google.maps.DirectionsService();
     var map;
-    function initialize() {
+
+
+    function initialize() {debugger;
       directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
       var MakerSquare = new google.maps.LatLng(37.787518, -122.399868);
       var mapOptions = {
@@ -41,12 +43,14 @@ angular.module('instatrip.services', [])
       Map = map;
     }
 
-    function calcRoute(start, end, travelMethod) {
+
+
+    function calcRoute(start, end, travelMethod) {debugger;
       var waypoints = []; // these will be waypoints along the way
       var checkboxArray = document.getElementById('waypoints');
-
+debugger;
       if (markers.length > 0) {
-        for (var k = 0; k < markers.length; k++) {
+        for (var k = 0; k < markers.length; k++) {debugger;
           waypoints.push({
             location: new google.maps.LatLng(markers[k].position.lat(), markers[k].position.lng()),
             stopover: true
@@ -54,6 +58,9 @@ angular.module('instatrip.services', [])
         }
 
       }
+
+      waypoints = waypoints.slice(1,7);
+debugger;
       var request = {
           origin: start,
           destination: end,
@@ -62,50 +69,53 @@ angular.module('instatrip.services', [])
           unitSystem: google.maps.UnitSystem.METRIC
       };
 
-      directionsService.route(request, function(response, status) {
+      directionsService.route(request, function(response, status) {debugger;
         if (status === google.maps.DirectionsStatus.OK) {
-            var path = response.routes[0].overview_path;
-            startCoords.location.latitude = path[0].lat();
-            startCoords.location.longitude = path[0].lng();
-            endCoords.location.latitude = path[path.length-1].lat();
-            endCoords.location.longitude = path[path.length-1].lng();
+            // $state.go('display');
+
+            // var path = response.routes[0].overview_path;
+            // startCoords.location.latitude = path[0].lat();
+            // startCoords.location.longitude = path[0].lng();
+            // endCoords.location.latitude = path[path.length-1].lat();
+            // endCoords.location.longitude = path[path.length-1].lng();
             directionsDisplay.setDirections(response);
         }
         console.log('directionsService RESPONSE: ', response.routes[0]);
-        var nPts = findN(response.routes[0].overview_path, points);
-        var coords = [];
-        for(var i = 0; i < nPts.length; i++){
-          coords.push({
-            lat: nPts[i].A,
-            lng: nPts[i].F
-          });
-        }
-        currentCoords = coords;
+        // var nPts = findN(response.routes[0].overview_path, points);
+        // var coords = [];
+        // for(var i = 0; i < nPts.length; i++){
+        //   coords.push({
+        //     lat: nPts[i].A,
+        //     lng: nPts[i].F
+        //   });
+        // }
+        // currentCoords = coords;
       });
     }
 
-    initialize();
-    var routes = calcRoute(start, end, travelMethod);
+    // var routes = calcRoute(start, end, travelMethod);
+    // initialize();
 
 // take variable length array and return an array with n evenly spaced points
-    var findN = function(input, n){
-        var len = input.length;
-        var divis;
-        var output = [];
-        if (len > n){
-            divis = Math.floor(len / n);
-        } else {
-            divis = n;
-        }
+    // function findN (input, n){
+    //     var len = input.length;
+    //     var divis;
+    //     var output = [];
+    //     if (len > n){
+    //         divis = Math.floor(len / n);
+    //     } else {
+    //         divis = n;
+    //     }
 
-        for(var i = 0; i < len; i+=divis){
-            output.push(input[i]);
-        }
-        return output;
-    };
+    //     for(var i = 0; i < len; i+=divis){
+    //         output.push(input[i]);
+    //     }
+    //     return output;
+    // };
 
 
-    var setMarkers = function(data) {
+    function setMarkers (data) {
+      var bars = data.bars;
       markers = [];
 
       var makeMarker = function(data, id) { console.log('marker data', data, id);
@@ -146,7 +156,7 @@ angular.module('instatrip.services', [])
         if (id !== 'start' && id !== 'end') {
           markerParams.icon = icon;
         }
-
+debugger;
         var marker = new google.maps.Marker(markerParams);
 
         // Add the event listener to markers so we know when they're clicked
@@ -164,11 +174,16 @@ angular.module('instatrip.services', [])
         return marker;
       };
 
+      startCoords.location.latitude = data.startLocation.lat;
+      startCoords.location.longitude = data.startLocation.lng;
+      endCoords.location.latitude = data.endLocation.lat;
+      endCoords.location.longitude = data.endLocation.lng;
+
       // this recreates the start waypoint
-      startCoords.barName = 'Start';
+      startCoords.barName = 'Start';debugger;
       markers.push(makeMarker(startCoords, 'start'));
-      for(var i = 0; i < data.length; i++) {
-        var newMarker = makeMarker(data[i], i);
+      for(var i = 0; i < bars.length; i++) {
+        var newMarker = makeMarker(bars[i], i);
         markers.push(newMarker);
       }
       // this recreates the end waypoint
@@ -181,7 +196,9 @@ angular.module('instatrip.services', [])
       calcRoute(start, end, travelMethod);
     };
 
-    var getLocs = function(start, end) {
+
+
+    function getLocs (start, end) {
       return $http({
         method: 'POST',
         url: "/search",
@@ -189,7 +206,12 @@ angular.module('instatrip.services', [])
           start: start,
           end: end
         }
-      }).then(function(resp){
+      }).then(function(resp){ 
+         return $state.go('display').then(function(){return resp}); 
+      }).then(function(resp){ debugger;
+         initialize();
+         return resp;
+      }).then(function(resp){ debugger;
         setMarkers(resp.data);
       })
       .catch(function(err) {
@@ -201,37 +223,37 @@ angular.module('instatrip.services', [])
 
   }; // END OF getmap()
 
-  var markMap = function(num) {
-    // collect all of the coords/create require objects and put them into markers array
+  // var markMap = function(num) {
+  //   // collect all of the coords/create require objects and put them into markers array
 
-    var curlen = markers.length;
-    if (curlen > 0){
-      for (var i = 0; i < curlen; i++){
-          markers[i].setMap(null);
-      }
-    }
-        markers = [];
-    for (var j = 0; j < currentCoords.length; j++){
-        var myLatlng = new google.maps.LatLng(currentCoords[j].lat ,currentCoords[j].lng);
-        var marker = new google.maps.Marker({
-            position: myLatlng
-         });
-        markers.push(marker);
-    }
-    // remove all of the markers expect the one need to be marked
-    // To add or remove the marker to the map, call setMap();
-    for (j = 0; j < currentCoords.length; j++){
-        if (j === num) {
-          if (currentMarker !== num){
-            currentMarker = num;
-            markers[j].setMap(Map);
-          }
-        } else {
-          markers[j].setMap(null);
-        }
+  //   var curlen = markers.length;
+  //   if (curlen > 0){
+  //     for (var i = 0; i < curlen; i++){
+  //         markers[i].setMap(null);
+  //     }
+  //   }
+  //       markers = [];
+  //   for (var j = 0; j < currentCoords.length; j++){
+  //       var myLatlng = new google.maps.LatLng(currentCoords[j].lat ,currentCoords[j].lng);
+  //       var marker = new google.maps.Marker({
+  //           position: myLatlng
+  //        });
+  //       markers.push(marker);
+  //   }
+  //   // remove all of the markers expect the one need to be marked
+  //   // To add or remove the marker to the map, call setMap();
+  //   for (j = 0; j < currentCoords.length; j++){
+  //       if (j === num) {
+  //         if (currentMarker !== num){
+  //           currentMarker = num;
+  //           markers[j].setMap(Map);
+  //         }
+  //       } else {
+  //         markers[j].setMap(null);
+  //       }
 
-    }
-  };
+  //   }
+  // };
 
   var getImages = function(){
     return currentImages;
@@ -239,8 +261,8 @@ angular.module('instatrip.services', [])
 
   return {
             getmap: getmap,
-            getImages: getImages,
-            markMap: markMap
+            getImages: getImages
+            // markMap: markMap
 
          };
 });
