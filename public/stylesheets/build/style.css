@@ -1,3 +1,21 @@
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn,
+.btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
+  background-color: #512DA8;
+  opacity: .7;
+  border-color: #512DA8; }
+
+.modal-backdrop.am-fade {
+  opacity: .5;
+  transition: opacity .35s linear; }
+  .modal-backdrop.am-fade.ng-enter {
+    opacity: 0; }
+    .modal-backdrop.am-fade.ng-enter.ng-enter-active {
+      opacity: .5; }
+  .modal-backdrop.am-fade.ng-leave {
+    opacity: .5; }
+    .modal-backdrop.am-fade.ng-leave.ng-leave-active {
+      opacity: 0; }
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -33,12 +51,6 @@ form input.ng-touched.ng-invalid {
 .formValidMessage p {
   color: red;
   position: absolute; }
-
-.btn.disabled, .btn[disabled], fieldset[disabled] .btn,
-.btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
-  background-color: #512DA8;
-  opacity: .7;
-  border-color: #512DA8; }
 
 .simple-form {
   padding: 10px;
@@ -386,15 +398,3 @@ a {
   font-size: 50px;
   font-weight: 600;
   color: white; }
-
-.modal-backdrop.am-fade {
-  opacity: .5;
-  transition: opacity .15s linear; }
-  .modal-backdrop.am-fade.ng-enter {
-    opacity: 0; }
-    .modal-backdrop.am-fade.ng-enter.ng-enter-active {
-      opacity: .5; }
-  .modal-backdrop.am-fade.ng-leave {
-    opacity: .5; }
-    .modal-backdrop.am-fade.ng-leave.ng-leave-active {
-      opacity: 0; }

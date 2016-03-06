@@ -1,3 +1,7 @@
+
+@import 'bootstrap-override';
+
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -36,13 +40,6 @@ form input.ng-touched.ng-invalid {
 .formValidMessage p {
   color: red;
   position: absolute;
-}
-
-.btn.disabled, .btn[disabled], fieldset[disabled] .btn ,
-.btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
-  background-color: #512DA8;
-  opacity: .7;
-  border-color: #512DA8;
 }
 
 .simple-form {
@@ -456,20 +453,5 @@ a {
 }
 
 
-.modal-backdrop.am-fade {
-  opacity: .5;
-  transition: opacity .35s linear;
-  &.ng-enter {
-    opacity: 0;
-    &.ng-enter-active {
-      opacity: .5;
-    }
-  }
-  &.ng-leave {
-    opacity: .5;
-    &.ng-leave-active {
-      opacity: 0;
-    }
-  }
-}
+
 

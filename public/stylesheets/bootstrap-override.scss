@@ -1,0 +1,27 @@
+
+
+// disabled buttons
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn ,
+.btn.disabled:hover, .btn[disabled]:hover, fieldset[disabled] .btn:hover {
+  background-color: #512DA8;
+  opacity: .7;
+  border-color: #512DA8;
+}
+
+
+.modal-backdrop.am-fade {
+  opacity: .5;
+  transition: opacity .35s linear;
+  &.ng-enter {
+    opacity: 0;
+    &.ng-enter-active {
+      opacity: .5;
+    }
+  }
+  &.ng-leave {
+    opacity: .5;
+    &.ng-leave-active {
+      opacity: 0;
+    }
+  }
+}
