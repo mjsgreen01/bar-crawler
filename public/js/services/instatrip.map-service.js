@@ -15,7 +15,7 @@ angular.module('instatrip.mapService', [])
     location: {}
   };
 
-  var getmap = function(start,end,travelMethod) {debugger;
+  var getmap = function(start,end,travelMethod) {
 
     travelMethod = travelMethod || 'WALKING';
     start = start || 'San Francisco';
@@ -26,7 +26,7 @@ angular.module('instatrip.mapService', [])
     var map;
 
 
-    function initialize() {debugger;
+    function initialize() {
       directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
       var MakerSquare = new google.maps.LatLng(37.787518, -122.399868);
       var mapOptions = {
@@ -45,12 +45,12 @@ angular.module('instatrip.mapService', [])
 
 
 
-    function calcRoute(start, end, travelMethod) {debugger;
+    function calcRoute(start, end, travelMethod) {
       var waypoints = []; // these will be waypoints along the way
       var checkboxArray = document.getElementById('waypoints');
-debugger;
+
       if (markers.length > 0) {
-        for (var k = 0; k < markers.length; k++) {debugger;
+        for (var k = 0; k < markers.length; k++) {
           waypoints.push({
             location: new google.maps.LatLng(markers[k].position.lat(), markers[k].position.lng()),
             stopover: true
@@ -59,8 +59,8 @@ debugger;
 
       }
 
-      waypoints = waypoints.slice(1,7);
-debugger;
+      // waypoints = waypoints.slice(1,7);
+
       var request = {
           origin: start,
           destination: end,
@@ -69,110 +69,77 @@ debugger;
           unitSystem: google.maps.UnitSystem.METRIC
       };
 
-      directionsService.route(request, function(response, status) {debugger;
+      directionsService.route(request, function(response, status) {
         if (status === google.maps.DirectionsStatus.OK) {
-            // $state.go('display');
 
-            // var path = response.routes[0].overview_path;
-            // startCoords.location.latitude = path[0].lat();
-            // startCoords.location.longitude = path[0].lng();
-            // endCoords.location.latitude = path[path.length-1].lat();
-            // endCoords.location.longitude = path[path.length-1].lng();
             directionsDisplay.setDirections(response);
         }
         console.log('directionsService RESPONSE: ', response.routes[0]);
-        // var nPts = findN(response.routes[0].overview_path, points);
-        // var coords = [];
-        // for(var i = 0; i < nPts.length; i++){
-        //   coords.push({
-        //     lat: nPts[i].A,
-        //     lng: nPts[i].F
-        //   });
-        // }
-        // currentCoords = coords;
+
       });
     }
 
-    // var routes = calcRoute(start, end, travelMethod);
-    // initialize();
+    var makeMarker = function(data, id) { console.log('marker data', data, id);
+      var myLatlng = new google.maps.LatLng(data.location.latitude, data.location.longitude);
 
-// take variable length array and return an array with n evenly spaced points
-    // function findN (input, n){
-    //     var len = input.length;
-    //     var divis;
-    //     var output = [];
-    //     if (len > n){
-    //         divis = Math.floor(len / n);
-    //     } else {
-    //         divis = n;
-    //     }
+      var contentString = '';
 
-    //     for(var i = 0; i < len; i+=divis){
-    //         output.push(input[i]);
-    //     }
-    //     return output;
-    // };
+      if(data.location.address !== undefined) {
+        contentString = '<div id="content" class="marker">' +
+        '<div class="marker-title">' + data.barName + '</div>' +
+        '<div class="marker-address">' + data.location.address + '</div>' +
+        '</div>';
+      } else {
+        contentString = '<div id="content" class="marker">' +
+        '<div class="marker-title">' + data.barName + '</div>' +
+        '</div>';
+      }
 
+      // This is what will display above the marker when clicked
+      var infoWindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+
+      // custom bar-icon
+      var icon = {
+        url: 'http://www.charbase.com/images/glyph/127866',
+        scaledSize: new google.maps.Size(50, 50),
+        origin: new google.maps.Point(0,0),
+        anchor: new google.maps.Point(32,32)
+      };
+
+      var markerParams = {
+        position: myLatlng,
+        id: id,
+        photos: data.photos
+      };
+
+      if (id !== 'start' && id !== 'end') {
+        markerParams.icon = icon;
+      }
+
+      var marker = new google.maps.Marker(markerParams);
+
+      // Add the event listener to markers so we know when they're clicked
+      google.maps.event.addListener(marker, 'click', function() {
+        if(activeWindow) {
+          activeWindow.close();
+        }
+        currentImages = []; // empty out currentImages
+        infoWindow.open(map, marker);
+        activeWindow = infoWindow;
+        currentImages = marker.photos;
+        $state.go('display.pics'); // we have to fire off an event for the controller
+      });
+
+      return marker;
+    };
+
+    
 
     function setMarkers (data) {
       var bars = data.bars;
       markers = [];
-
-      var makeMarker = function(data, id) { console.log('marker data', data, id);
-        var myLatlng = new google.maps.LatLng(data.location.latitude, data.location.longitude);
-
-        var contentString = '';
-
-        if(data.location.address !== undefined) {
-          contentString = '<div id="content" class="marker">' +
-          '<div class="marker-title">' + data.barName + '</div>' +
-          '<div class="marker-address">' + data.location.address + '</div>' +
-          '</div>';
-        } else {
-          contentString = '<div id="content" class="marker">' +
-          '<div class="marker-title">' + data.barName + '</div>' +
-          '</div>';
-        }
-
-        // This is what will display above the marker when clicked
-        var infoWindow = new google.maps.InfoWindow({
-          content: contentString
-        });
-
-        // custom bar-icon
-        var icon = {
-          url: 'http://www.charbase.com/images/glyph/127866',
-          scaledSize: new google.maps.Size(50, 50),
-          origin: new google.maps.Point(0,0),
-          anchor: new google.maps.Point(32,32)
-        };
-
-        var markerParams = {
-          position: myLatlng,
-          id: id,
-          photos: data.photos
-        };
-
-        if (id !== 'start' && id !== 'end') {
-          markerParams.icon = icon;
-        }
-debugger;
-        var marker = new google.maps.Marker(markerParams);
-
-        // Add the event listener to markers so we know when they're clicked
-        google.maps.event.addListener(marker, 'click', function() {
-          if(activeWindow) {
-            activeWindow.close();
-          }
-          currentImages = []; // empty out currentImages
-          infoWindow.open(map, marker);
-          activeWindow = infoWindow;
-          currentImages = marker.photos;
-          $state.go('display.pics'); // we have to fire off an event for the controller
-        });
-
-        return marker;
-      };
 
       startCoords.location.latitude = data.startLocation.lat;
       startCoords.location.longitude = data.startLocation.lng;
@@ -180,7 +147,7 @@ debugger;
       endCoords.location.longitude = data.endLocation.lng;
 
       // this recreates the start waypoint
-      startCoords.barName = 'Start';debugger;
+      startCoords.barName = 'Start';
       markers.push(makeMarker(startCoords, 'start'));
       for(var i = 0; i < bars.length; i++) {
         var newMarker = makeMarker(bars[i], i);
@@ -207,11 +174,11 @@ debugger;
           end: end
         }
       }).then(function(resp){ 
-         return $state.go('display').then(function(){return resp}); 
-      }).then(function(resp){ debugger;
+         return $state.go('display').then(function(){return resp;}); 
+      }).then(function(resp){ 
          initialize();
          return resp;
-      }).then(function(resp){ debugger;
+      }).then(function(resp){ 
         setMarkers(resp.data);
       })
       .catch(function(err) {
@@ -223,37 +190,7 @@ debugger;
 
   }; // END OF getmap()
 
-  // var markMap = function(num) {
-  //   // collect all of the coords/create require objects and put them into markers array
-
-  //   var curlen = markers.length;
-  //   if (curlen > 0){
-  //     for (var i = 0; i < curlen; i++){
-  //         markers[i].setMap(null);
-  //     }
-  //   }
-  //       markers = [];
-  //   for (var j = 0; j < currentCoords.length; j++){
-  //       var myLatlng = new google.maps.LatLng(currentCoords[j].lat ,currentCoords[j].lng);
-  //       var marker = new google.maps.Marker({
-  //           position: myLatlng
-  //        });
-  //       markers.push(marker);
-  //   }
-  //   // remove all of the markers expect the one need to be marked
-  //   // To add or remove the marker to the map, call setMap();
-  //   for (j = 0; j < currentCoords.length; j++){
-  //       if (j === num) {
-  //         if (currentMarker !== num){
-  //           currentMarker = num;
-  //           markers[j].setMap(Map);
-  //         }
-  //       } else {
-  //         markers[j].setMap(null);
-  //       }
-
-  //   }
-  // };
+ 
 
   var getImages = function(){
     return currentImages;
