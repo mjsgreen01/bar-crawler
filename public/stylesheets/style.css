@@ -444,4 +444,14 @@ a {
 }
 
 
+/*
+* Loading-gif
+*/
+
+.landingPage .loading {
+  margin-top: 50px;
+  font-size: 50px;
+  font-weight: 600;
+  color: white;
+}
 

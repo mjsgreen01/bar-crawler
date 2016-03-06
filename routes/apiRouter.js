@@ -17,7 +17,11 @@ router.post('/', function(req, res) {
   }
 
   // get Gmap walking route btwn start and end
-  maps.get_map_route(start, end).then(function(route) {
+  maps.get_map_route(start, end).then(function(route) {console.log('ROUTE', route);
+    if (route.status === 'NOT_FOUND') {
+      res.status(400).send({ error: 'Invalid location'});
+    }
+
     startLatLng = route.routes[0].legs[0].start_location;
     endLatLng = route.routes[0].legs[0].end_location;
     var leg = route.routes[0].legs[0];

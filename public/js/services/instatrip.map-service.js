@@ -1,16 +1,21 @@
 angular.module('instatrip.mapService', [])
 
 .factory('MapService', function ($http, $state) {
+  var service;
   var currentImages = [],
   currentCoords = [],
   markers = [],
   points = 15,
+  loadingBarCrawl = false,
   activeWindow,
   Map,
   currentMarker,
   directionsDisplay,
   directionsService,
   map,
+  start,
+  end,
+  travelMethod,
   startCoords = {
     location: {}
   },
@@ -18,7 +23,12 @@ angular.module('instatrip.mapService', [])
     location: {}
   };
 
-  var getmap = function (start,end,travelMethod) {
+
+
+  var getmap = function (startPoint, endPoint ,travelMeth) {
+    start = startPoint;
+    end = endPoint;
+    travelMethod = travelMeth;
 
     travelMethod = travelMethod || 'WALKING';
     start = start || 'San Francisco';
@@ -40,16 +50,21 @@ angular.module('instatrip.mapService', [])
         start: start,
         end: end
       }
-    }).then(function(resp){ 
+    }).then(function(resp){
+      service.loadingBarCrawl = false;
        return $state.go('display').then(function(){return resp;}); 
     }).then(function(resp){ 
        initialize();
        return resp;
     }).then(function(resp){ 
-      setMarkers(resp.data);
+      setMarkers(resp.data, start, end);
     })
     .catch(function(err) {
       console.log(err);
+      service.loadingBarCrawl = false;
+      if (err.data.error === "Invalid location") {
+        alert("INVALID START OR END LOCATION");
+      }
     });
   }
 
@@ -212,9 +227,11 @@ angular.module('instatrip.mapService', [])
   };
 
 
+  service = {
+    getmap: getmap,
+    getImages: getImages,
+    loadingBarCrawl: loadingBarCrawl
+  };
 
-  return {
-            getmap: getmap,
-            getImages: getImages
-         };
+  return service;
 });
