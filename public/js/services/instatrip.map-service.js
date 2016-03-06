@@ -1,6 +1,6 @@
 angular.module('instatrip.mapService', [])
 
-.factory('MapService', function ($http, $state) {
+.factory('MapService', function ($http, $state, $modal) {
   var service;
   var currentImages = [],
   currentCoords = [],
@@ -63,7 +63,7 @@ angular.module('instatrip.mapService', [])
       console.log(err);
       service.loadingBarCrawl = false;
       if (err.data.error === "Invalid location") {
-        alert("INVALID START OR END LOCATION");
+        $modal({title: 'Invalid Location', content: 'Try entering a different start or end location.', show: true});
       }
     });
   }
